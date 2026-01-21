@@ -17,7 +17,8 @@
     "@tailwindcss/vite": "^4.1.18",
     "pinia": "^3.0.4",
     "tailwindcss": "^4.1.18",
-    "vue": "^3.5.26"
+    "vue": "^3.5.26",
+    "vue-router": "^4.6.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
@@ -28,6 +29,7 @@
     "globals": "^17.0.0",
     "prettier": "3.7.4",
     "vite": "^7.3.0",
+    "vite-plugin-pwa": "^1.2.0",
     "vite-plugin-vue-devtools": "^8.0.5"
   }
 }

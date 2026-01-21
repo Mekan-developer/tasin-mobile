@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="w-[160px] h-auto">
+    <div class="w-[180px] h-auto">
       <img :src="projectLogo" alt="logo elyeterli dal" />
     </div>
   </div>
