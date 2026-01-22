@@ -14,13 +14,28 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
+      
+      // УБЕРИТЕ эти строки или создайте sw.js
+      // strategies: 'injectManifest',
+      // srcDir: 'public',
+      // filename: 'sw.js',
+      
+      // Или, если хотите injectManifest, создайте public/sw.js:
+      // strategies: 'injectManifest',
+      // srcDir: 'src', // Лучше поместить в src
+      // filename: 'sw.js', // Файл в src/sw.js
+      
       includeAssets: ['favicon.ico', 'pwa-192x192.png', 'pwa-512x512.png', 'apple-touch-icon.png'],
+      
       manifest: {
         name: 'Täsin Mobile',
         short_name: 'TM',
         description: 'Premium Mobile Shop App',
         theme_color: '#121212',
         background_color: '#121212',
+        display: 'standalone', // ДОБАВЬТЕ ЭТО
+        start_url: '/', // ДОБАВЬТЕ ЭТО
+        orientation: 'portrait', // ДОБАВЬТЕ ЭТО
         icons: [
           {
             src: 'pwa-192x192.png',
@@ -39,6 +54,40 @@ export default defineConfig({
             purpose: 'any maskable'
           }
         ]
+      },
+      
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'google-fonts-cache',
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 * 365
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
+          }
+        ]
+      },
+      
+      // ДОБАВЬТЕ эти настройки:
+      devOptions: {
+        enabled: true, // Включает PWA в dev-режиме
+        type: 'module' // Использует module type для разработки
+      },
+      
+      // ДОБАВЬТЕ для лучшей интеграции:
+      injectRegister: 'auto',
+      
+      pwaAssets: {
+        disabled: false,
+        config: true
       }
     })
   ],

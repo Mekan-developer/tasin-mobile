@@ -1,13 +1,13 @@
 <template>
   <div class="layout">
     <!-- Header -->
-    <header class="layout-header">
+    <header class="layout-header" v-show="!$route.meta.hideHeader">
       <AppHeader />
     </header>
 
     <!-- Main content -->
     <main class="layout-main">
-      <slot />
+      <slot></slot>
     </main>
 
     <!-- Footer -->
@@ -45,8 +45,6 @@ import AppFooter from '@/components/AppFooter.vue'
 }
 
 .layout-main {
-  flex: 1;
-  overflow-y: auto;
   padding-bottom: 72px;
 }
 

@@ -40,9 +40,34 @@
         </svg>
       </div>
       <span class="label">Профиль</span>
+      <button v-if="needRefresh" @click="updateApp" class="pwa-update-btn">
+      🔄
+    </button>
     </router-link>
   </footer>
 </template>
+
+<script setup>
+  import { onMounted } from 'vue'
+  import { useRegisterSW } from 'virtual:pwa-register/vue'
+
+  // Используйте встроенную регистрацию PWA
+  const { needRefresh, updateServiceWorker } = useRegisterSW()
+
+  const updateApp = () => {
+    updateServiceWorker()
+    window.location.reload()
+  }
+
+  onMounted(() => {
+    // Показываем уведомление об обновлении
+    if (needRefresh.value) {
+      if (confirm('Доступно новое обновление. Перезагрузить приложение?')) {
+        updateApp()
+      }
+    }
+  })
+</script>
 
 <style scoped>
 .bottom-nav {

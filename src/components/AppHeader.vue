@@ -8,6 +8,9 @@
 <script setup>
 import ProjectLogo from '@/components/icons/ProjectLogo.vue'
 import ThemeToggle from '@/components/ThemeToggle.vue'
+
+
+
 </script>
 
 <style scoped>

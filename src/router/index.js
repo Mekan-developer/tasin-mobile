@@ -9,7 +9,10 @@ export const router = createRouter({
     },
     {
       path: '/category/:id',
-      component: () => import('@/views/pages/main/CategoryView.vue')
+      component: () => import('@/views/pages/main/CategoryView.vue'),
+      meta:{
+        hideHeader: true
+      }
     }
   ]
 })
