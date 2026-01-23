@@ -53,12 +53,14 @@ import AppFooter from '@/components/AppFooter.vue'
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 100;
+  z-index: 1000; /* Увеличьте z-index */
   background-color: var(--footer-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-top: 1px solid var(--footer-border);
   transition: background-color 0.3s, border-color 0.3s;
+  height: auto; /* Добавьте это */
+  min-height: 60px; /* Добавьте это */
 }
 
 @media (min-width: 768px) {

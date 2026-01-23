@@ -9,24 +9,24 @@ import { VitePWA } from 'vite-plugin-pwa'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
-    vue(), 
-    vueDevTools(), 
+    vue(),
+    vueDevTools(),
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      
+
       // УБЕРИТЕ эти строки или создайте sw.js
       // strategies: 'injectManifest',
       // srcDir: 'public',
       // filename: 'sw.js',
-      
+
       // Или, если хотите injectManifest, создайте public/sw.js:
-      // strategies: 'injectManifest',
-      // srcDir: 'src', // Лучше поместить в src
-      // filename: 'sw.js', // Файл в src/sw.js
-      
+      strategies: 'injectManifest',
+      srcDir: 'src', // Лучше поместить в src
+      filename: 'sw.js', // Файл в src/sw.js
+
       includeAssets: ['favicon.ico', 'pwa-192x192.png', 'pwa-512x512.png', 'apple-touch-icon.png'],
-      
+
       manifest: {
         name: 'Täsin Mobile',
         short_name: 'TM',
@@ -55,7 +55,7 @@ export default defineConfig({
           }
         ]
       },
-      
+
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
         runtimeCaching: [
@@ -75,18 +75,18 @@ export default defineConfig({
           }
         ]
       },
-      
+
       // ДОБАВЬТЕ эти настройки:
       devOptions: {
         enabled: true, // Включает PWA в dev-режиме
         type: 'module' // Использует module type для разработки
       },
-      
+
       // ДОБАВЬТЕ для лучшей интеграции:
       injectRegister: 'auto',
-      
+
       pwaAssets: {
-        disabled: false,
+        disabled: true,
         config: true
       }
     })

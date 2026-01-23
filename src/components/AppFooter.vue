@@ -27,7 +27,7 @@
           <circle cx="20" cy="21" r="1"></circle>
           <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
         </svg>
-        <span class="badge">3</span>
+        <span v-if="cartTotal > 0" class="badge">{{ cartTotal }}</span>
       </div>
       <span class="label">Корзина</span>
     </router-link>
@@ -40,34 +40,17 @@
         </svg>
       </div>
       <span class="label">Профиль</span>
-      <button v-if="needRefresh" @click="updateApp" class="pwa-update-btn">
-      🔄
-    </button>
     </router-link>
   </footer>
 </template>
 
 <script setup>
-  import { onMounted } from 'vue'
-  import { useRegisterSW } from 'virtual:pwa-register/vue'
+  import { computed } from 'vue'
+  import { useCartStore } from '@/stores/cart'
 
-  // Используйте встроенную регистрацию PWA
-  const { needRefresh, updateServiceWorker } = useRegisterSW()
-
-  const updateApp = () => {
-    updateServiceWorker()
-    window.location.reload()
-  }
-
-  onMounted(() => {
-    // Показываем уведомление об обновлении
-    if (needRefresh.value) {
-      if (confirm('Доступно новое обновление. Перезагрузить приложение?')) {
-        updateApp()
-      }
-    }
-  })
-</script>
+  const cartStore = useCartStore()
+  const cartTotal = computed(() => cartStore.totalItems)
+  </script>
 
 <style scoped>
 .bottom-nav {
@@ -145,12 +128,12 @@
     padding: 8px 24px;
     min-width: 80px;
   }
-  
+
   .icon-wrapper svg {
     width: 24px;
     height: 24px;
   }
-  
+
   .label {
     font-size: 12px;
   }
