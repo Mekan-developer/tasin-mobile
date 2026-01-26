@@ -5,11 +5,11 @@ export const router = createRouter({
   routes: [
     {
       path: '/',
-      component: () => import('@/views/pages/main/MainView.vue')
+      component: () => import('@/pages/MainView.vue')
     },
     {
       path: '/category/:id',
-      component: () => import('@/views/pages/main/CategoryView.vue'),
+      component: () => import('@/pages/CategoryView.vue'),
       meta:{
         hideHeader: true
       }
