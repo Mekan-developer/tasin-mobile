@@ -47,7 +47,11 @@ const props = defineProps({
   productColor: {
     type: String,
     default: '#333'
-  }
+  },
+  resolveImagePath: {
+    type: Function,
+    default: (p) => p || ''
+  },
 })
 
 const emit = defineEmits(['update:activeImage', 'openImage'])
@@ -83,14 +87,6 @@ const openFullImage = () => {
   emit('openImage')
 }
 
-const resolveImagePath = (path) => {
-  if (!path) return ''
-  if (path.startsWith('@/')) {
-    const name = path.split('/').pop()
-    return new URL(`../../assets/img/${name}`, import.meta.url).href
-  }
-  return path
-}
 </script>
 
 <style scoped>

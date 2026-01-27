@@ -8,11 +8,12 @@
           <h3 class="product-name">{{ product.name }}</h3>
 
           <div class="product-image-container">
-            <SwaggerItem 
+            <SwaggerItem
               :images="product.images"
               :activeImage="product.activeImage || 0"
               :productName="product.name"
               :productColor="product.color"
+              :resolve-image-path="resolveImagePath"
               @update:activeImage="(idx) => product.activeImage = idx"
               @openImage="openFullImage(product)"
             />
@@ -35,34 +36,19 @@
       </div>
     </div>
 
-    <!-- Image Lightbox Modal -->
-    <Transition name="fade">
-      <div v-if="isModalOpen" class="image-modal" @click="isModalOpen = false">
-        <div class="modal-content" @click.stop
-             @touchstart="handleTouchStart"
-             @touchend="(e) => handleModalTouchEnd(e)"
-        >
-          <img :src="resolveImagePath(currentCategoryProducts.find(p => p.id === activeModalProductId).images[currentCategoryProducts.find(p => p.id === activeModalProductId).activeImage])"
-               class="modal-img" />
-
-          <div v-if="currentCategoryProducts.find(p => p.id === activeModalProductId).images.length > 1" class="modal-indicators">
-             <div v-for="(_, i) in currentCategoryProducts.find(p => p.id === activeModalProductId).images"
-                  :key="i"
-                  class="modal-dot"
-                  :class="{ active: currentCategoryProducts.find(p => p.id === activeModalProductId).activeImage === i }"
-             ></div>
-          </div>
-
-          <button class="close-modal" @click="isModalOpen = false">
-             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-          </button>
-        </div>
-      </div>
-    </Transition>
+    <ImageModal
+      v-model="isModalOpen"
+      :product="currentModalProduct"
+      :resolve-image-path="resolveImagePath"
+      @update:active-image="(idx) => {
+      const p = currentCategoryProducts.find(pr => pr.id === activeModalProductId)
+      if (p) p.activeImage = idx
+      }"
+      />
 
     <!-- Toast Notification Component -->
-    <ToastItem 
-      :message="toastMessage" 
+    <ToastItem
+      :message="toastMessage"
       :type="toastType"
       @close="handleToastClose"
     />
@@ -78,6 +64,7 @@ import SwaggerItem from '@/components/items/SwaggerItem.vue'
 import LinksItem from '@/components/items/LinksItem.vue'
 import VariantsItem from '@/components/items/VariantsItem.vue'
 import ToastItem from '@/components/items/ToastItem.vue'
+import ImageModal from '@/components/items/ImageModal.vue'
 
 
 const toastMessage = ref('')
@@ -91,6 +78,10 @@ const showToast = (message, type = 'success') => {
 const handleToastClose = () => {
   toastMessage.value = ''
 }
+
+const currentModalProduct = computed(() =>
+  currentCategoryProducts.value.find(p => p.id === activeModalProductId.value) ?? null
+)
 
 const cartStore = useCartStore()
 const isInCart = (productId) => cartStore.isInCart(productId)
@@ -118,33 +109,6 @@ const toggleCart = (product) => {
   }
 }
 
-
-const touchStart = ref(0)
-const touchY = ref(0)
-
-const handleTouchStart = (e) => {
-  touchStart.value = e.touches[0].clientX
-  touchY.value = e.touches[0].clientY
-}
-
-const handleModalTouchEnd = (e) => {
-  const product = currentCategoryProducts.value.find(p => p.id === activeModalProductId.value)
-  if (!product) return
-
-  const touchEnd = e.changedTouches[0].clientX
-  const touchEndY = e.changedTouches[0].clientY
-
-  const diffX = touchStart.value - touchEnd
-  const diffY = touchY.value - touchEndY
-
-  if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40) {
-    if (diffX > 0) {
-      product.activeImage = (product.activeImage + 1) % product.images.length
-    } else {
-      product.activeImage = (product.activeImage - 1 + product.images.length) % product.images.length
-    }
-  }
-}
 
 const copyProductLink = async (product) => {
   const productUrl = `${window.location.origin}${route.path}#product-${product.id}`
@@ -318,7 +282,7 @@ const resolveImagePath = (path) => {
   if (!path) return ''
   if (path.startsWith('@/')) {
     const name = path.split('/').pop()
-    return new URL(`../../../assets/img/${name}`, import.meta.url).href
+    return new URL(`../assets/img/${name}`, import.meta.url).href
   }
   return path
 }
@@ -405,80 +369,6 @@ const shareProduct = async (product) => {
   line-height: 1.3;
 }
 
-/* Image Modal */
-.image-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.95);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-  backdrop-filter: blur(10px);
-}
-
-.modal-content {
-  position: relative;
-  width: 100%;
-  height: 80vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.modal-img {
-  max-width: 95%;
-  max-height: 100%;
-  object-fit: contain;
-  border-radius: 12px;
-}
-
-.modal-indicators {
-  position: absolute;
-  bottom: -40px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 8px;
-}
-
-.modal-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.3);
-  transition: all 0.3s;
-}
-
-.modal-dot.active {
-  background: white;
-  transform: scale(1.2);
-}
-
-.close-modal {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  color: white;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.close-modal:active {
-  transform: scale(0.9);
-}
-
 /* Toast Notification */
 .toast {
   position: fixed;
@@ -509,29 +399,6 @@ const shareProduct = async (product) => {
   flex-shrink: 0;
   width: 20px;
   height: 20px;
-}
-
-/* Transitions */
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.fade-enter-from, .fade-leave-to {
-  opacity: 0;
-}
-
-.toast-enter-active, .toast-leave-active {
-  transition: all 0.3s ease;
-}
-
-.toast-enter-from {
-  opacity: 0;
-  transform: translateX(-50%) translateY(20px);
-}
-
-.toast-leave-to {
-  opacity: 0;
-  transform: translateX(-50%) translateY(-20px);
 }
 
 /* Responsive */
