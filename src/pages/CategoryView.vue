@@ -324,10 +324,12 @@ const shareProduct = async (product) => {
 
 <style scoped>
 
+/* Страница категории: колонка на всю высоту, на ПК — ширина 100% */
 .category-page {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  width: 100%;
+  min-height: 100%;
   background-color: var(--bg-primary);
 }
 
@@ -343,16 +345,17 @@ const shareProduct = async (product) => {
 
 .product-card {
   background: var(--bg-card);
-  border-radius: 24px;
+  border-radius: 14px;
   overflow: hidden;
   box-shadow: 0 4px 20px var(--shadow-color);
   border: 1px solid var(--border-color);
+  transition: box-shadow 0.2s, transform 0.2s;
 }
 
 .product-main-content {
   display: flex;
   flex-direction: column;
-  padding: 16px;
+  padding: 12px;
   gap: 12px;
 }
 
@@ -401,18 +404,70 @@ const shareProduct = async (product) => {
   height: 20px;
 }
 
-/* Responsive */
+/* Планшет: сетка 2 колонки */
 @media (min-width: 768px) {
   .products-list {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 24px;
+    padding: 24px;
+    padding-bottom: 48px;
+  }
+
+  .product-main-content {
+    padding: 14px;
+    gap: 14px;
+  }
+
+  .product-name {
+    font-size: 19px;
   }
 }
 
+/* Десктоп: 3 колонки, увеличенные отступы */
 @media (min-width: 1024px) {
   .products-list {
     grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    padding: 32px;
+    padding-bottom: 56px;
+  }
+
+  .product-card {
+    border-radius: 10px;
+    cursor: default;
+  }
+
+  .product-card:hover {
+    box-shadow: 0 8px 28px var(--shadow-strong);
+  }
+
+  .product-main-content {
+    padding: 22px;
+    gap: 16px;
+  }
+
+  .product-name {
+    font-size: 20px;
+  }
+}
+
+/* Широкий десктоп: 4 колонки */
+@media (min-width: 1280px) {
+  .products-list {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+    padding: 40px 48px;
+    padding-bottom: 64px;
+  }
+
+  .product-main-content {
+    padding: 16px;
+    gap: 18px;
+  }
+
+  .product-name {
+    font-size: 22px;
   }
 }
 </style>

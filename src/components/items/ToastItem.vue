@@ -49,68 +49,70 @@ watch(() => props.message, (newMessage) => {
 </script>
 
 <style scoped>
+/* Минимальный тост: компактный, мягкая тень, без тяжёлых акцентов */
 .toast {
   position: fixed;
-  bottom: 100px;
+  bottom: 88px;
   left: 50%;
   transform: translateX(-50%);
   background: var(--bg-card);
   color: var(--text-primary);
-  padding: 14px 24px;
-  border-radius: 12px;
+  padding: 12px 20px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   gap: 10px;
-  box-shadow: 0 4px 20px var(--shadow-strong);
+  box-shadow: 0 4px 16px var(--shadow-color);
   z-index: 2000;
   border: 1px solid var(--border-color);
   font-weight: 500;
   font-size: 14px;
-  max-width: 90%;
+  max-width: calc(100% - 32px);
   width: fit-content;
 }
 
-.toast-success {
-  border-left: 4px solid #4caf50;
-}
-
 .toast-success svg {
-  color: #4caf50;
-}
-
-.toast-info {
-  border-left: 4px solid #2196f3;
+  color: #22c55e;
 }
 
 .toast-info svg {
-  color: #2196f3;
-}
-
-.toast-error {
-  border-left: 4px solid #f44336;
+  color: var(--accent-color);
 }
 
 .toast-error svg {
-  color: #f44336;
+  color: #ef4444;
+}
+
+.toast-success {
+  border-left: 3px solid #22c55e;
+}
+
+.toast-info {
+  border-left: 3px solid var(--accent-color);
+}
+
+.toast-error {
+  border-left: 3px solid #ef4444;
 }
 
 .toast svg {
   flex-shrink: 0;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
 }
 
-.toast-enter-active, .toast-leave-active {
-  transition: all 0.3s ease;
+.toast-enter-active,
+.toast-leave-active {
+  transition: opacity 0.25s ease, transform 0.25s ease;
 }
 
 .toast-enter-from {
   opacity: 0;
-  transform: translateX(-50%) translateY(20px);
+  transform: translateX(-50%) translateY(12px);
 }
 
 .toast-leave-to {
   opacity: 0;
-  transform: translateX(-50%) translateY(-20px);
+  transform: translateX(-50%) translateY(-8px);
 }
 </style>

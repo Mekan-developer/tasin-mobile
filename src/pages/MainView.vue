@@ -8,13 +8,14 @@
         <router-link
           v-for="category in categories"
           :key="category.id"
-          :to="category.link"
+          :to="`/category/${category.id}`"
           class="category-card"
         >
-          <div class="category-icon" :class="{ 'category-icon--accent': category.isAccent }">
-            <component :is="category.icon" />
+          <div v-if="category.image_icon" class="category-icon" :class="{ 'category-icon--accent': category.isAccent }">
+            <img :src="categoryImage(category)" :alt="category.image_icon">
           </div>
           <span class="category-name">{{ category.name }}</span>
+
         </router-link>
       </div>
     </section>
@@ -22,159 +23,31 @@
 </template>
 
 <script setup>
-import { h } from 'vue'
+import {  ref, onMounted } from 'vue'
 import ProductSlider from '@/components/main/ProductSlider.vue'
+import axios from 'axios'
 
-const categories = [
-  {
-    id: 1,
-    name: 'Смарт-фоны',
-    link: '/category/smartphones',
-    isAccent: true,
-    icon: () => h('svg', {
-      xmlns: 'http://www.w3.org/2000/svg',
-      width: '26',
-      height: '26',
-      viewBox: '0 0 24 24',
-      fill: 'none',
-      stroke: 'currentColor',
-      'stroke-width': '2',
-      'stroke-linecap': 'round',
-      'stroke-linejoin': 'round'
-    }, [
-      h('rect', { x: '5', y: '2', width: '14', height: '20', rx: '2', ry: '2' }),
-      h('line', { x1: '12', y1: '18', x2: '12.01', y2: '18' })
-    ])
-  },
-  {
-    id: 2,
-    name: 'Планшеты',
-    link: '/category/tablets',
-    isAccent: false,
-    icon: () => h('svg', {
-      xmlns: 'http://www.w3.org/2000/svg',
-      width: '26',
-      height: '26',
-      viewBox: '0 0 24 24',
-      fill: 'none',
-      stroke: 'currentColor',
-      'stroke-width': '2',
-      'stroke-linecap': 'round',
-      'stroke-linejoin': 'round'
-    }, [
-      h('rect', { x: '4', y: '2', width: '16', height: '20', rx: '2', ry: '2' }),
-      h('line', { x1: '12', y1: '18', x2: '12.01', y2: '18' })
-    ])
-  },
-  {
-    id: 3,
-    name: 'Часы',
-    link: '/category/watches',
-    isAccent: false,
-    icon: () => h('svg', {
-      xmlns: 'http://www.w3.org/2000/svg',
-      width: '26',
-      height: '26',
-      viewBox: '0 0 24 24',
-      fill: 'none',
-      stroke: 'currentColor',
-      'stroke-width': '2',
-      'stroke-linecap': 'round',
-      'stroke-linejoin': 'round'
-    }, [
-      h('circle', { cx: '12', cy: '12', r: '7' }),
-      h('polyline', { points: '12 9 12 12 13.5 13.5' }),
-      h('path', { d: 'M16.51 17.35l-.35 3.83a2 2 0 0 1-2 1.82H9.83a2 2 0 0 1-2-1.82l-.35-3.83m.01-10.7l.35-3.83A2 2 0 0 1 9.83 1h4.35a2 2 0 0 1 2 1.82l.35 3.83' })
-    ])
-  },
-  {
-    id: 4,
-    name: 'Наушники',
-    link: '/category/headphones',
-    isAccent: false,
-    icon: () => h('svg', {
-      xmlns: 'http://www.w3.org/2000/svg',
-      width: '26',
-      height: '26',
-      viewBox: '0 0 24 24',
-      fill: 'none',
-      stroke: 'currentColor',
-      'stroke-width': '2',
-      'stroke-linecap': 'round',
-      'stroke-linejoin': 'round'
-    }, [
-      h('path', { d: 'M3 18v-6a9 9 0 0 1 18 0v6' }),
-      h('path', { d: 'M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z' })
-    ])
-  },
-  {
-    id: 5,
-    name: 'Кабели',
-    link: '/category/cables',
-    isAccent: false,
-    icon: () => h('svg', {
-      xmlns: 'http://www.w3.org/2000/svg',
-      width: '26',
-      height: '26',
-      viewBox: '0 0 24 24',
-      fill: 'none',
-      stroke: 'currentColor',
-      'stroke-width': '2',
-      'stroke-linecap': 'round',
-      'stroke-linejoin': 'round'
-    }, [
-      h('path', { d: 'M17 21v-2a1 1 0 0 1-1-1v-1a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1a1 1 0 0 1-1 1' }),
-      h('path', { d: 'M19 15V6.5a1 1 0 0 0-7 0v11a1 1 0 0 1-7 0V9' }),
-      h('line', { x1: '17', y1: '21', x2: '7', y2: '21' })
-    ])
-  },
-  {
-    id: 7,
-    name: 'Чехлы',
-    link: '/category/cases',
-    isAccent: false,
-    icon: () => h('svg', {
-      xmlns: 'http://www.w3.org/2000/svg',
-      width: '26',
-      height: '26',
-      viewBox: '0 0 24 24',
-      fill: 'none',
-      stroke: 'currentColor',
-      'stroke-width': '2',
-      'stroke-linecap': 'round',
-      'stroke-linejoin': 'round'
-    }, [
-      h('rect', { x: '5', y: '2', width: '14', height: '20', rx: '2', ry: '2' }),
-      h('path', { d: 'M9 6h6' }),
-      h('path', { d: 'M9 10h6' }),
-      h('path', { d: 'M12 18h.01' })
-    ])
-  },
-  {
-    id: 6,
-    name: 'Батареи',
-    link: '/category/batteries',
-    isAccent: false,
-    icon: () => h('svg', {
-      xmlns: 'http://www.w3.org/2000/svg',
-      width: '26',
-      height: '26',
-      viewBox: '0 0 24 24',
-      fill: 'none',
-      stroke: 'currentColor',
-      'stroke-width': '2',
-      'stroke-linecap': 'round',
-      'stroke-linejoin': 'round'
-    }, [
-      h('rect', { x: '1', y: '6', width: '18', height: '12', rx: '2', ry: '2' }),
-      h('line', { x1: '23', y1: '13', x2: '23', y2: '11' })
-    ])
-  }
-]
+const categories = ref([])
+
+onMounted(async () => {
+  const response = await axios.get('http://localhost:3000/categories')
+  categories.value = response.data
+  console.log(categories.value)
+})
+
+const categoryImage = (category) => {
+  return new URL(`../assets/categories/${category.image_icon}`, import.meta.url).href
+}
+
 </script>
 
+
+
+
 <style scoped>
+/* Контейнер главной: мобильный по умолчанию, на ПК — на всю ширину #app */
 .main-page {
+  width: 100%;
   min-height: 100%;
   background-color: var(--bg-secondary);
   transition: background-color 0.3s;
@@ -182,6 +55,7 @@ const categories = [
 
 .categories-section {
   padding: 4px 12px 24px;
+  max-width: 100%;
 }
 
 .section-title {
@@ -324,10 +198,61 @@ const categories = [
   }
 }
 
-/* Desktop */
+/* Desktop: 6 колонок, увеличенные отступы */
 @media (min-width: 1024px) {
+  .categories-section {
+    padding: 12px 32px 40px;
+  }
+
+  .section-title {
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+
   .categories-grid {
     grid-template-columns: repeat(6, 1fr);
+    gap: 20px;
+    max-width: 100%;
+  }
+
+  .category-card {
+    padding: 24px 16px;
+    gap: 12px;
+    cursor: pointer;
+  }
+
+  .category-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 16px;
+  }
+
+  .category-name {
+    font-size: 15px;
+  }
+}
+
+/* Широкий десктоп: мягкое ограничение ширины сетки категорий */
+@media (min-width: 1280px) {
+  .categories-section {
+    padding: 16px 48px 48px;
+  }
+
+  .categories-grid {
+    gap: 24px;
+  }
+
+  .category-card {
+    padding: 28px 20px;
+  }
+
+  .category-icon {
+    width: 80px;
+    height: 80px;
+  }
+
+  .category-name {
+    font-size: 16px;
   }
 }
 </style>

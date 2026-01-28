@@ -73,4 +73,29 @@ import AppFooter from '@/components/AppFooter.vue'
     padding-bottom: 80px;
   }
 }
+
+/* Desktop: хедер и основной блок адаптированы под широкий экран */
+@media (min-width: 1024px) {
+  .layout-header {
+    padding: 0 32px;
+  }
+
+  .layout-main {
+    padding-bottom: 88px;
+  }
+
+  .layout-footer {
+    padding: 12px 32px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .layout-header {
+    padding: 0 48px;
+  }
+
+  .layout-footer {
+    padding: 14px 48px;
+  }
+}
 </style>

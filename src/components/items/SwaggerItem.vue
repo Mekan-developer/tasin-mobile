@@ -90,16 +90,18 @@ const openFullImage = () => {
 </script>
 
 <style scoped>
+/* Минимальная галерея: квадрат, лёгкий фон, тонкие индикаторы */
 .product-image-wrapper {
   width: 100%;
   aspect-ratio: 1;
-  border-radius: 18px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   overflow: hidden;
-  cursor: zoom-in;
+  cursor: pointer;
+  background: var(--bg-secondary);
 }
 
 .image-gallery {
@@ -112,48 +114,45 @@ const openFullImage = () => {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: opacity 0.3s ease;
-  image-rendering: auto;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  transition: opacity 0.25s ease;
 }
 
 .image-indicators {
   position: absolute;
-  bottom: 8px;
+  bottom: 10px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 2px;
-  padding: 4px;
-  background: rgba(0,0,0,0.2);
-  border-radius: 10px;
-  backdrop-filter: blur(4px);
+  gap: 4px;
+  padding: 6px 8px;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 20px;
 }
 
 .image-dot-wrapper {
-  padding: 6px 4px;
+  padding: 4px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .image-dot {
-  width: 5px;
-  height: 5px;
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.4);
-  transition: all 0.2s;
+  background: rgba(255, 255, 255, 0.5);
+  transition: width 0.2s, background 0.2s;
 }
 
 .image-dot.active {
-  background: white;
+  background: #fff;
   width: 10px;
-  border-radius: 3px;
+  border-radius: 2px;
 }
 
 .placeholder-icon {
-  opacity: 0.5;
+  opacity: 0.4;
 }
 </style>

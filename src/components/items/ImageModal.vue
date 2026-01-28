@@ -71,79 +71,85 @@ function handleTouchEnd(e) {
 </script>
 
 <style scoped>
+/* Минимальное полноэкранное окно изображения: тёмный фон, простая кнопка закрытия */
 .image-modal {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.95);
+  background: rgba(0, 0, 0, 0.92);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 2000;
-  backdrop-filter: blur(10px);
 }
 
 .modal-content {
   position: relative;
   width: 100%;
-  height: 80vh;
+  height: 85vh;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0 16px;
 }
 
 .modal-img {
-  max-width: 95%;
+  max-width: 100%;
   max-height: 100%;
   object-fit: contain;
-  border-radius: 12px;
+  border-radius: 8px;
 }
 
 .modal-indicators {
   position: absolute;
-  bottom: -40px;
+  bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 8px;
+  gap: 6px;
 }
 
 .modal-dot {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.3);
-  transition: all 0.3s;
+  background: rgba(255, 255, 255, 0.35);
+  transition: width 0.2s, background 0.2s;
 }
 
 .modal-dot.active {
-  background: white;
-  transform: scale(1.2);
+  background: #fff;
+  width: 16px;
+  border-radius: 3px;
 }
 
 .close-modal {
   position: absolute;
-  top: 20px;
-  right: 20px;
-  background: rgba(255, 255, 255, 0.1);
+  top: 16px;
+  right: 16px;
+  background: rgba(255, 255, 255, 0.12);
   border: none;
-  color: white;
+  color: #fff;
   width: 44px;
   height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background 0.2s, transform 0.15s;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .close-modal:active {
-  transform: scale(0.9);
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(0.96);
 }
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.3s ease;
+  transition: opacity 0.25s ease;
 }
 
 .fade-enter-from,

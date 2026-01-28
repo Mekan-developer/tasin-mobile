@@ -1,43 +1,26 @@
 <template>
-  <div class="action-icons">
-    <button class="icon-btn view-btn" :title="`${viewCount || 0} просмотров`">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
-        <circle cx="12" cy="12" r="3"/>
+  <div class="actions">
+    <button class="action view" :title="`${viewCount || 0} просмотров`">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>
+      </svg>
+      <span class="count">{{ viewCount || 0 }}</span>
+    </button>
+    <button class="action" @click="shareProduct" title="Поделиться">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/>
       </svg>
     </button>
-
-    <button class="icon-btn share-btn" @click="shareProduct" title="Поделиться">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
-        <polyline points="16 6 12 2 8 6"/>
-        <line x1="12" y1="2" x2="12" y2="15"/>
+    <button class="action" @click="copyProductLink" title="Копировать ссылку">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
       </svg>
     </button>
-
-    <button class="icon-btn copy-link-btn" @click="copyProductLink" title="Копировать ссылку">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
-        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+    <button class="action cart" :class="{ 'in-cart': isInCart }" @click="toggleCart" :title="isInCart ? 'Удалить из корзины' : 'В корзину'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
       </svg>
-    </button>
-
-    <button
-      class="icon-btn cart-btn"
-      :class="{ 'in-cart': isInCart }"
-      @click="toggleCart"
-      :title="isInCart ? 'Удалить из корзины' : 'Добавить в корзину'"
-    >
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="9" cy="21" r="1"/>
-        <circle cx="20" cy="21" r="1"/>
-        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-        <line v-if="!isInCart" x1="12" y1="6" x2="12" y2="12"/>
-        <line v-if="!isInCart" x1="9" y1="9" x2="15" y2="9"/>
-      </svg>
-      <span v-if="cartQuantity > 0" class="cart-quantity-badge">
-        {{ cartQuantity }}
-      </span>
+      <span v-if="cartQuantity > 0" class="badge">{{ cartQuantity }}</span>
     </button>
   </div>
 </template>
@@ -86,63 +69,77 @@ const copyProductLink = async () => {
 </script>
 
 <style scoped>
-.action-icons {
+/* Минимальный ряд действий: только иконки, без рамок, лёгкий отклик */
+.actions {
   display: flex;
-  gap: 12px;
-  justify-content: center;
-  padding: 8px 0;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 0;
 }
 
-.icon-btn {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
+.action {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
   width: 44px;
   height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-primary);
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  border-radius: 12px;
   cursor: pointer;
-  transition: all 0.2s;
-  position: relative;
+  transition: color 0.2s, background 0.15s, transform 0.15s;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.icon-btn:active {
-  transform: scale(0.95);
+.action:active {
   background: var(--hover-bg);
+  transform: scale(0.95);
 }
 
-.icon-btn svg {
+.action svg {
   width: 20px;
   height: 20px;
+  flex-shrink: 0;
 }
 
-.cart-btn {
-  position: relative;
-  transition: all 0.3s;
+.action.view {
+  margin-right: auto;
+  padding-left: 10px;
+  padding-right: 12px;
+  min-width: auto;
+  width: auto;
 }
 
-.cart-btn.in-cart {
+.action.view .count {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.action.cart.in-cart {
   color: var(--accent-color);
-  background: rgba(33, 150, 243, 0.1);
 }
 
-.cart-quantity-badge {
+.action.cart .badge {
   position: absolute;
-  top: -6px;
-  right: -6px;
+  top: 2px;
+  right: 2px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
   background: var(--accent-color);
-  color: white;
-  font-size: 11px;
-  font-weight: 700;
-  min-width: 20px;
-  height: 20px;
-  border-radius: 10px;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 6px;
-  box-shadow: 0 2px 6px rgba(33, 150, 243, 0.4);
 }
 </style>

@@ -308,4 +308,92 @@ onUnmounted(() => {
     width: 36px;
   }
 }
+
+/* Desktop: баннер занимает ширину контента, увеличенная типографика */
+@media (min-width: 1024px) {
+  .slider-container {
+    padding: 20px 32px 24px;
+    max-width: 100%;
+  }
+
+  .slider-wrapper {
+    border-radius: 20px;
+    max-width: 100%;
+  }
+
+  .slide {
+    padding: 48px 40px;
+    border-radius: 20px;
+  }
+
+  .slide-content {
+    gap: 24px;
+  }
+
+  .badge {
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+
+  .title {
+    font-size: 40px;
+    margin: 8px 0;
+  }
+
+  .description {
+    font-size: 18px;
+    margin: 16px 0 24px;
+  }
+
+  .btn-more {
+    padding: 14px 32px;
+    font-size: 16px;
+    border-radius: 10px;
+  }
+
+  .slide-arrow {
+    width: 52px;
+    height: 52px;
+  }
+
+  .slide-arrow svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .slider-indicators {
+    bottom: 24px;
+    left: 40px;
+    gap: 10px;
+  }
+
+  .indicator {
+    width: 32px;
+    height: 4px;
+  }
+
+  .indicator.active {
+    width: 44px;
+  }
+}
+
+/* Широкий десктоп */
+@media (min-width: 1280px) {
+  .slider-container {
+    padding: 24px 48px 28px;
+  }
+
+  .slide {
+    padding: 56px 48px;
+  }
+
+  .title {
+    font-size: 44px;
+  }
+
+  .description {
+    font-size: 19px;
+    margin: 18px 0 28px;
+  }
+}
 </style>

@@ -13,15 +13,24 @@ a {
   color: inherit;
 }
 
-/* Desktop container */
+/* Tablet: ограничение по ширине контента, центрирование */
 @media (min-width: 768px) {
   #app {
     max-width: 768px;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 
+/* Desktop: широкая рабочая область для ПК */
 @media (min-width: 1024px) {
   #app {
-    max-width: 480px;
+    max-width: 1200px;
+  }
+}
+
+@media (min-width: 1280px) {
+  #app {
+    max-width: 1280px;
   }
 }
