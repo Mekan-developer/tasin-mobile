@@ -6,7 +6,7 @@
       <h3 class="section-title">Категории</h3>
       <div class="categories-grid">
         <router-link
-          v-for="category in categories"
+          v-for="category in categoryStore.categories"
           :key="category.id"
           :to="`/category/${category.id}`"
           class="category-card"
@@ -23,17 +23,13 @@
 </template>
 
 <script setup>
-import {  ref, onMounted } from 'vue'
+import {  onMounted } from 'vue'
 import ProductSlider from '@/components/main/ProductSlider.vue'
-import axios from 'axios'
+import { useCategoryStore } from '@/stores/category'
 
-const categories = ref([])
+const categoryStore = useCategoryStore()
 
-onMounted(async () => {
-  const response = await axios.get('http://localhost:3000/categories')
-  categories.value = response.data
-  console.log(categories.value)
-})
+onMounted(async () => await categoryStore.fetchCategories())
 
 const categoryImage = (category) => {
   return new URL(`../assets/categories/${category.image_icon}`, import.meta.url).href

@@ -1,6 +1,6 @@
 <template>
   <div class="category-page">
-    <HeaderItem :categoryName="categoryName" :productCount="products.length" />
+    <HeaderItem v-if="categoryName" :categoryName="categoryName" :productCount="products.length" />
 
     <div class="products-list">
       <div v-for="product in products" :key="product.id" :id="`product-${product.id}`" class="product-card">
@@ -32,7 +32,7 @@
           />
         </div>
 
-        <VariantsItem :variants="product.variants" />
+        <VariantsItem :variants="product.variants || []" />
       </div>
     </div>
 
@@ -41,7 +41,7 @@
       :product="currentModalProduct"
       :resolve-image-path="resolveImagePath"
       @update:active-image="(idx) => {
-      const p = currentCategoryProducts.find(pr => pr.id === activeModalProductId)
+      const p = products.find(pr => pr.id === activeModalProductId)
       if (p) p.activeImage = idx
       }"
       />
@@ -56,7 +56,7 @@
 </template>
 
 <script setup>
-import { ref, computed, reactive, onMounted, nextTick, watch, onUnmounted } from 'vue'
+import { ref, computed, onMounted, nextTick, watch, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useCartStore } from '@/stores/cart'
 import HeaderItem from '@/components/items/HeaderItem.vue'
@@ -65,6 +65,67 @@ import LinksItem from '@/components/items/LinksItem.vue'
 import VariantsItem from '@/components/items/VariantsItem.vue'
 import ToastItem from '@/components/items/ToastItem.vue'
 import ImageModal from '@/components/items/ImageModal.vue'
+import {useCategoryStore} from '@/stores/category'
+import {useItemsStore} from '@/stores/items'
+
+
+const itemsStore = useItemsStore()
+const products = computed(() => itemsStore.items)
+
+onMounted(async () => {
+  await loadCategoryNames()
+  await itemsStore.fetchItemsByCategory(categoryId.value)
+})
+watch(categoryId, (id) => {
+  itemsStore.fetchItemsByCategory(id)
+})
+
+
+
+
+
+
+
+const route = useRoute()
+const categoryNames = ref([])
+const categoryId = computed(() => route.params.id)
+
+const categoryStore = useCategoryStore()
+async function loadCategoryNames() {
+  try {
+    categoryNames.value = Array.isArray(categoryStore.categories) ? categoryStore.categories : []
+  } catch (e) {
+    categoryNames.value = []
+  }
+}
+
+const categoryName = computed(() => {
+  const list = categoryNames.value
+  if (!Array.isArray(list)) return 'Категория'
+  const c = list.find((cat) => String(cat.id) === String(categoryId.value))
+  return c?.name ?? 'Категория'
+})
+
+async function loadProducts() {
+  const id = categoryId.value
+  if(!id){
+    products.value = []
+    return
+  }
+  try {
+    const { data } = await axios.get(`${API_BASE}/products?category_id=${id}`)
+    const list = Array.isArray(data) ? data : []
+    // Нормализация: у каждого продукта есть images[] и activeImage
+    products.value = list.map((p) => ({
+      ...p,
+      images: p.images ?? [],
+      activeImage: p.activeImage ?? 0
+    }))
+  } catch (e) {
+    products.value = []
+  }
+}
+
 
 
 const toastMessage = ref('')
@@ -80,7 +141,7 @@ const handleToastClose = () => {
 }
 
 const currentModalProduct = computed(() =>
-  currentCategoryProducts.value.find(p => p.id === activeModalProductId.value) ?? null
+  products.value.find(p => p.id === activeModalProductId.value) ?? null
 )
 
 const cartStore = useCartStore()
@@ -88,7 +149,6 @@ const isInCart = (productId) => cartStore.isInCart(productId)
 const addToCart = (product) => cartStore.addToCart(product)
 const removeFromCart = (productId) => cartStore.removeFromCart(productId)
 
-const route = useRoute()
 const isModalOpen = ref(false)
 const activeModalProductId = ref(null)
 
@@ -216,80 +276,21 @@ onUnmounted(() => {
   window.removeEventListener('hashchange', handleHashChange)
 })
 
-// Mock Data
-const allProducts = reactive({
-  'cases': [
-    {
-      id: 101,
-      activeImage: 0,
-      name: '17 Pro Style Premium Case',
-      description: 'Креативный дизайн с защитой камеры и поддержкой аксессуаров. Доступен в нескольких цветах.',
-      price: '3,5$',
-      color: '#4a4e69',
-      images: [
-        '@/assets/img/iphone_case_mockup.jpeg',
-        '@/assets/img/iphone_case_silver.jpeg',
-        '@/assets/img/iphone_case_deep_purple.jpeg'
-      ],
-      views: 1254,
-      isNew: true,
-      variants: [
-        { model: 'iPhone 16 Pro Max', price: '3,5$' },
-        { model: 'iPhone 16 Pro', price: '3,5$' },
-        { model: 'iPhone 15 Pro Max', price: '3,5$' },
-        { model: 'iPhone 15 Pro', price: '3,5$' },
-        { model: 'iPhone 14 Pro Max', price: '3,5$' },
-        { model: 'iPhone 14 Pro', price: '3,5$' },
-        { model: 'iPhone 13 Pro Max', price: '3,5$' },
-        { model: 'iPhone 13 Pro', price: '3,5$' },
-      ]
-    },
-    {
-      id: 102,
-      name: 'Crystal Clear MagSafe',
-      description: 'Идеально прозрачный чехол с усиленными магнитами.',
-      price: '5,0$',
-      color: '#a2d2ff',
-      images: [],
-      views: 432
-    }
-  ],
-  'smartphones': [
-      { id: 201, name: 'iPhone 15 Pro', price: '999$', color: '#222', images: [], views: 890 }
-  ]
-})
 
-const currentCategoryProducts = computed(() => {
-  return allProducts[categoryId.value] || []
-})
 
-const categoryId = computed(() => route.params.id)
 
-const categoryName = computed(() => {
-  const map = {
-    'smartphones': 'Смартфоны',
-    'cases': 'Чехлы',
-    'tablets': 'Планшеты',
-    'watches': 'Часы',
-    'headphones': 'Наушники',
-    'cables': 'Кабели',
-    'batteries': 'Батареи'
-  }
-  return map[categoryId.value] || 'Категория'
-})
 
+
+/** Резолв пути картинки: имя файла из API → URL из assets/img */
 const resolveImagePath = (path) => {
   if (!path) return ''
-  if (path.startsWith('@/')) {
-    const name = path.split('/').pop()
+  const name = path.startsWith('@/') ? path.split('/').pop() : path
+  try {
     return new URL(`../assets/img/${name}`, import.meta.url).href
+  } catch {
+    return path
   }
-  return path
 }
-
-const products = computed(() => {
-  return allProducts[categoryId.value] || []
-})
 
 watch(products, () => {
   if (products.value.length > 0) {

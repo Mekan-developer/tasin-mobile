@@ -5,14 +5,26 @@ export const router = createRouter({
   routes: [
     {
       path: '/',
-      component: () => import('@/pages/MainView.vue')
+      component: () => import('@/pages/MainPage.vue')
     },
     {
       path: '/category/:id',
-      component: () => import('@/pages/CategoryView.vue'),
+      component: () => import('@/pages/ItemPage.vue'),
       meta:{
         hideHeader: true
       }
+    },
+    {
+      path: '/search',
+      component: () => import('@/pages/SearchPage.vue')
+    },
+    {
+      path: '/cart',
+      component: () => import('@/pages/CartPage.vue')
+    },
+    {
+      path: '/profile',
+      component: () => import('@/pages/ProfilePage.vue')
     }
   ]
 })

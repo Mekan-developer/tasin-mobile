@@ -8,15 +8,15 @@
         @touchend="handleTouchEnd"
       >
         <img
-          v-if="product"
-          :src="resolveImagePath(product.images[product.activeImage])"
+          v-if="product && product.images && product.images.length > 0"
+          :src="resolveImagePath(product.images[product.activeImage ?? 0])"
           class="modal-img"
           alt=""
         />
 
-        <div v-if="product && product.images.length > 1" class="modal-indicators">
+        <div v-if="product && product.images && product.images.length > 1" class="modal-indicators">
           <div
-            v-for="(_, i) in product.images"
+            v-for="(_, i) in (product.images || [])"
             :key="i"
             class="modal-dot"
             :class="{ active: product.activeImage === i }"
@@ -54,7 +54,7 @@ function handleTouchStart(e) {
 }
 
 function handleTouchEnd(e) {
-  if (!props.product || props.product.images.length <= 1) return
+  if (!props.product || !props.product.images || props.product.images.length <= 1) return
   const touchEndX = e.changedTouches[0].clientX
   const touchEndY = e.changedTouches[0].clientY
   const diffX = touchStart.value - touchEndX
