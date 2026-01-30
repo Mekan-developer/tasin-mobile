@@ -4,9 +4,8 @@
       <span class="text-xl font-semibold text-white">{{ productPrice }}</span>
     </div>
     <div v-if="images && images.length > 0"
+          ref="galleryRef"
           class="image-gallery"
-          @touchstart="handleTouchStart"
-          @touchend="handleTouchEnd"
           @click="openFullImage"
       >
       <img
@@ -32,7 +31,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch, nextTick, onMounted, onUnmounted } from 'vue'
 
 const props = defineProps({
   images: {
@@ -89,6 +88,33 @@ const updateActiveImage = (index) => {
 const openFullImage = () => {
   emit('openImage')
 }
+
+/** Ref на контейнер галереи для подписки touch с passive (убирает violation в консоли) */
+const galleryRef = ref(null)
+let attachedEl = null
+
+function attachTouchListeners() {
+  const el = galleryRef.value
+  if (el && el !== attachedEl) {
+    el.addEventListener('touchstart', handleTouchStart, { passive: true })
+    el.addEventListener('touchend', handleTouchEnd, { passive: true })
+    attachedEl = el
+  }
+}
+
+function detachTouchListeners() {
+  if (attachedEl) {
+    attachedEl.removeEventListener('touchstart', handleTouchStart)
+    attachedEl.removeEventListener('touchend', handleTouchEnd)
+    attachedEl = null
+  }
+}
+
+watch(() => props.images?.length > 0, (hasImages) => {
+  nextTick(() => (hasImages ? attachTouchListeners() : detachTouchListeners()))
+}, { immediate: true })
+
+onUnmounted(detachTouchListeners)
 
 </script>
 

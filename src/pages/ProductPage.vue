@@ -3,42 +3,46 @@
     <HeaderItem v-if="categoryName" :categoryName="categoryName" :productCount="products.length" />
 
     <div class="products-list">
-      <div v-for="product in products" :key="product.id" :id="`product-${product.id}`" class="product-card">
-        <div class="product-main-content">
-          <h3 class="product-name">{{ product.name }}</h3>
+      <div v-if="productsStore.loading">Загрузка...</div>
+      <div v-else-if="productsStore.error">{{ productsStore.error }}</div>
+      <div v-else>
+        <div v-for="product in products" :key="product.id" :id="`product-${product.id}`" class="product-card flex flex-col">
+          <div class="product-main-content">
+            <h3 class="product-name">{{ product.name }}</h3>
 
-          <div class="product-image-container">
-            <SwaggerItem
-              :images="product.images"
-              :activeImage="product.activeImage || 0"
+            <div class="product-image-container">
+              <SwaggerItem
+                :images="product.images"
+                :activeImage="product.activeImage || 0"
+                :productName="product.name"
+                :productPrice="product.price"
+                :resolve-image-path="resolveImagePath"
+                @update:activeImage="(idx) => product.activeImage = idx"
+                @openImage="openFullImage(product)"
+              />
+            </div>
+
+            <LinksItem
+              :productId="+product.id"
               :productName="product.name"
-              :productPrice="product.price"
-              :resolve-image-path="resolveImagePath"
-              @update:activeImage="(idx) => product.activeImage = idx"
-              @openImage="openFullImage(product)"
+              :productDescription="product.description"
+              :viewCount="product.views"
+              :isInCart="isInCart(product.id)"
+              :cartQuantity="getCartQuantity(product.id)"
+              @toggleCart="toggleCart(product)"
+              @share="shareProduct(product)"
+              @copyLink="copyProductLink(product)"
             />
           </div>
 
-          <LinksItem
-            :productId="product.id"
-            :productName="product.name"
-            :productDescription="product.description"
-            :viewCount="product.views"
-            :isInCart="isInCart(product.id)"
-            :cartQuantity="getCartQuantity(product.id)"
-            @toggleCart="toggleCart(product)"
-            @share="shareProduct(product)"
-            @copyLink="copyProductLink(product)"
-          />
-        </div>
+          <div v-if="product.description" class="p-1 bg-white/5 border border-white/10 ">
+            <p class="text-sm text-gray-300 leading-tight">
+              {{ product.description }}
+            </p>
+          </div>
 
-        <div v-if="product.description" class="p-1 bg-white/5 border border-white/10 ">
-          <p class="text-sm text-gray-300 leading-tight">
-            {{ product.description }}
-          </p>
+          <VariantsItem :variants="product.variants || []" />
         </div>
-
-        <VariantsItem :variants="product.variants || []" />
       </div>
     </div>
 
@@ -87,7 +91,7 @@ const route = useRoute()
 const categoryNames = ref([])
 const categoryId = computed(() => route.params.id)
 watch(categoryId, (id) => {
-  productsStore.fetchProductsByCategory(id)
+  productsStore.fetchProductsByCategory(id, true)
 })
 
 

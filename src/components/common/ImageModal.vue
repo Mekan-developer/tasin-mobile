@@ -2,10 +2,9 @@
   <Transition name="fade">
     <div v-if="modelValue" class="image-modal" @click="$emit('update:modelValue', false)">
       <div
+        ref="modalContentRef"
         class="modal-content"
         @click.stop
-        @touchstart="handleTouchStart"
-        @touchend="handleTouchEnd"
       >
         <img
           v-if="product && product.images && product.images.length > 0"
@@ -34,7 +33,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch, nextTick, onUnmounted } from 'vue'
 
 /** Fullscreen image modal with swipe and indicators */
 const props = defineProps({
@@ -68,6 +67,33 @@ function handleTouchEnd(e) {
     emit('update:activeImage', next)
   }
 }
+
+/** Touch-обработчики через addEventListener с passive: true (убирает violation в консоли) */
+const modalContentRef = ref(null)
+let attachedEl = null
+
+function attachTouchListeners() {
+  const el = modalContentRef.value
+  if (el && el !== attachedEl) {
+    el.addEventListener('touchstart', handleTouchStart, { passive: true })
+    el.addEventListener('touchend', handleTouchEnd, { passive: true })
+    attachedEl = el
+  }
+}
+
+function detachTouchListeners() {
+  if (attachedEl) {
+    attachedEl.removeEventListener('touchstart', handleTouchStart)
+    attachedEl.removeEventListener('touchend', handleTouchEnd)
+    attachedEl = null
+  }
+}
+
+watch(() => props.modelValue, (open) => {
+  nextTick(() => (open ? attachTouchListeners() : detachTouchListeners()))
+}, { immediate: true })
+
+onUnmounted(detachTouchListeners)
 </script>
 
 <style scoped>
