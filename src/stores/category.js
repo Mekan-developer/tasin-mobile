@@ -9,7 +9,7 @@ export const useCategoryStore = defineStore('category', {
 
   actions: {
     async fetchCategories() {
-      const response = await axios.get('http://localhost:3000/categories')
+      const response = await axios.get('http://192.168.50.72:3000/categories')
       this.categories = response.data
     }
   }

@@ -12,7 +12,7 @@
               :images="product.images"
               :activeImage="product.activeImage || 0"
               :productName="product.name"
-              :productColor="product.color"
+              :productPrice="product.price"
               :resolve-image-path="resolveImagePath"
               @update:activeImage="(idx) => product.activeImage = idx"
               @openImage="openFullImage(product)"
@@ -32,6 +32,12 @@
           />
         </div>
 
+        <div v-if="product.description" class="p-1 bg-white/5 border border-white/10 ">
+          <p class="text-sm text-gray-300 leading-tight">
+            {{ product.description }}
+          </p>
+        </div>
+
         <VariantsItem :variants="product.variants || []" />
       </div>
     </div>
@@ -47,7 +53,7 @@
       />
 
     <!-- Toast Notification Component -->
-    <ToastItem
+    <NotificationView
       :message="toastMessage"
       :type="toastType"
       @close="handleToastClose"
@@ -63,32 +69,27 @@ import HeaderItem from '@/components/items/HeaderItem.vue'
 import SwaggerItem from '@/components/items/SwaggerItem.vue'
 import LinksItem from '@/components/items/LinksItem.vue'
 import VariantsItem from '@/components/items/VariantsItem.vue'
-import ToastItem from '@/components/items/ToastItem.vue'
-import ImageModal from '@/components/items/ImageModal.vue'
+import NotificationView from '@/components/common/NotificationView.vue'
+import ImageModal from '@/components/common/ImageModal.vue'
 import {useCategoryStore} from '@/stores/category'
-import {useItemsStore} from '@/stores/items'
+import {useProductsStore} from '@/stores/product'
 
 
-const itemsStore = useItemsStore()
-const products = computed(() => itemsStore.items)
+const productsStore = useProductsStore()
+const products = computed(() => productsStore.products)
 
 onMounted(async () => {
   await loadCategoryNames()
-  await itemsStore.fetchItemsByCategory(categoryId.value)
+  await productsStore.fetchProductsByCategory(categoryId.value)
 })
-watch(categoryId, (id) => {
-  itemsStore.fetchItemsByCategory(id)
-})
-
-
-
-
-
-
 
 const route = useRoute()
 const categoryNames = ref([])
 const categoryId = computed(() => route.params.id)
+watch(categoryId, (id) => {
+  productsStore.fetchProductsByCategory(id)
+})
+
 
 const categoryStore = useCategoryStore()
 async function loadCategoryNames() {
@@ -106,25 +107,25 @@ const categoryName = computed(() => {
   return c?.name ?? 'Категория'
 })
 
-async function loadProducts() {
-  const id = categoryId.value
-  if(!id){
-    products.value = []
-    return
-  }
-  try {
-    const { data } = await axios.get(`${API_BASE}/products?category_id=${id}`)
-    const list = Array.isArray(data) ? data : []
-    // Нормализация: у каждого продукта есть images[] и activeImage
-    products.value = list.map((p) => ({
-      ...p,
-      images: p.images ?? [],
-      activeImage: p.activeImage ?? 0
-    }))
-  } catch (e) {
-    products.value = []
-  }
-}
+// async function loadProducts() {
+//   const id = categoryId.value
+//   if(!id){
+//     products.value = []
+//     return
+//   }
+//   try {
+//     const { data } = await axios.get(`${API_BASE}/products?category_id=${id}`)
+//     const list = Array.isArray(data) ? data : []
+//     // Нормализация: у каждого продукта есть images[] и activeImage
+//     products.value = list.map((p) => ({
+//       ...p,
+//       images: p.images ?? [],
+//       activeImage: p.activeImage ?? 0
+//     }))
+//   } catch (e) {
+//     products.value = []
+//   }
+// }
 
 
 
@@ -356,7 +357,7 @@ const shareProduct = async (product) => {
 .product-main-content {
   display: flex;
   flex-direction: column;
-  padding: 12px;
+  padding: 12px 12px 0 12px;
   gap: 12px;
 }
 

@@ -29,7 +29,8 @@ import { useCategoryStore } from '@/stores/category'
 
 const categoryStore = useCategoryStore()
 
-onMounted(async () => await categoryStore.fetchCategories())
+onMounted(async () => {await categoryStore.fetchCategories(); console.log('categories', categoryStore.categories)})
+
 
 const categoryImage = (category) => {
   return new URL(`../assets/categories/${category.image_icon}`, import.meta.url).href

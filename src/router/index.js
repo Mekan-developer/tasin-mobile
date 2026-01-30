@@ -9,7 +9,7 @@ export const router = createRouter({
     },
     {
       path: '/category/:id',
-      component: () => import('@/pages/ItemPage.vue'),
+      component: () => import('@/pages/ProductPage.vue'),
       meta:{
         hideHeader: true
       }

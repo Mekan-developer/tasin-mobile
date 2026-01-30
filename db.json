@@ -21,8 +21,8 @@
     "views": 1254,
     "isNew": true,
     "variants": [
-      { "model": "iPhone 16 Pro Max" },
-      { "model": "iPhone 16 Pro" },
+      { "model": "iPhone 16 Pro Max", "price": "5656TMT" },
+      { "model": "iPhone 16 Pro", "price": "" },
       { "model": "iPhone 15 Pro Max" },
       { "model": "iPhone 15 Pro" },
       { "model": "iPhone 14 Pro Max" },

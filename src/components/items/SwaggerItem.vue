@@ -1,11 +1,14 @@
 <template>
-  <div class="product-image-wrapper" :style="{ background: `linear-gradient(135deg, ${productColor || '#333'}, #1a1a1a)` }">
+  <div class="product-image-wrapper relative">
+    <div v-if="productPrice" class="absolute bottom-3 left-3 bg-black/60 z-50 backdrop-blur-md px-3 py-1 rounded-lg border border-white/10 shadow-lg">
+      <span class="text-xl font-semibold text-white">{{ productPrice }}</span>
+    </div>
     <div v-if="images && images.length > 0"
-        class="image-gallery"
-        @touchstart="handleTouchStart"
-        @touchend="handleTouchEnd"
-        @click="openFullImage"
-    >
+          class="image-gallery"
+          @touchstart="handleTouchStart"
+          @touchend="handleTouchEnd"
+          @click="openFullImage"
+      >
       <img
         :src="resolveImagePath(images[activeImage || 0])"
         :alt="productName"
@@ -44,13 +47,13 @@ const props = defineProps({
     type: String,
     required: true
   },
-  productColor: {
-    type: String,
-    default: '#333'
-  },
   resolveImagePath: {
     type: Function,
     default: (p) => p || ''
+  },
+  productPrice: {
+    type: String,
+    default: ''
   },
 })
 
