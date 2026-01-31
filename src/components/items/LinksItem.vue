@@ -117,7 +117,7 @@ const copyProductLink = async () => {
 }
 
 .action.view .count {
-  font-size: 13px;
+  font-size: var(--text-sm);
   font-weight: 500;
   color: var(--text-muted);
 }
@@ -135,7 +135,7 @@ const copyProductLink = async () => {
   padding: 0 4px;
   background: var(--accent-color);
   color: #fff;
-  font-size: 10px;
+  font-size: var(--text-xs);
   font-weight: 600;
   border-radius: 8px;
   display: flex;

@@ -11,7 +11,9 @@ export const categoryService = {
 
   createCategory(data) {
     return api.post('/categories', data)
-  }
+  },
 
-  // Другие методы...
+  getSlides() {
+    return api.get('/slides')
+  },
 }

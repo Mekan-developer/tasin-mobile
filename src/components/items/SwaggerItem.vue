@@ -1,7 +1,7 @@
 <template>
   <div class="product-image-wrapper relative">
-    <div v-if="productPrice" class="absolute bottom-3 left-3 bg-black/60 z-50 backdrop-blur-md px-3 py-1 rounded-lg border border-white/10 shadow-lg">
-      <span class="text-xl font-semibold text-white">{{ productPrice }}</span>
+    <div v-if="productPrice" class="absolute bottom-3 left-3 bg-black/60 z-1 backdrop-blur-md px-3 py-1 rounded-lg border border-white/10 shadow-lg">
+      <span class="price-label font-semibold text-white">{{ productPrice }}</span>
     </div>
     <div v-if="images && images.length > 0"
           ref="galleryRef"
@@ -120,6 +120,10 @@ onUnmounted(detachTouchListeners)
 
 <style scoped>
 /* Минимальная галерея: квадрат, лёгкий фон, тонкие индикаторы */
+.price-label {
+  font-size: var(--text-xl);
+}
+
 .product-image-wrapper {
   width: 100%;
   aspect-ratio: 1;

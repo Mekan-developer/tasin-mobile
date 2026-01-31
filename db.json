@@ -9,13 +9,45 @@
     { "id": 7, "name": "Чехлы",      "order": 2, "show_price": true,"image_icon": "cases.png" }
   ],
 
+  "slides" : [
+    {
+      "badge": "НОВИНКА 2024",
+      "title": "Samsung Galaxy S24",
+      "description": "AI-функции для повседневной жизни.",
+      "bgColor": "#22c55e",
+      "image": "iphone_case_deep_purple.jpeg",
+      "price": 89990,
+      "oldPrice": 99990,
+      "discount": "−10%"
+    },
+    {
+      "badge": "АКЦИЯ",
+      "title": "iPhone 15 Pro",
+      "description": "Титановый корпус и мощный чип.",
+      "bgColor": "#3b82f6",
+      "image": "iphone_case_silvesdr.jpeg",
+      "price": 94990,
+      "oldPrice": 109990,
+      "discount": "−14%"
+    },
+    {
+      "badge": "ХИТ ПРОДАЖ",
+      "title": "Xiaomi 14",
+      "description": "Флагманская камера Leica.",
+      "bgColor": "#f97316",
+      "image": "iphone_case_mockup.jpeg",
+      "price": 59990,
+      "discount": "−15%"
+    }
+  ], 
+
   "products": [
   {
     "id": 101,
     "category_id": 7,
     "activeImage": 0,
     "name": "17 Pro Style Premium Case",
-    "description": "Креативный дизайн с защитой камеры и поддержкой аксессуаров. Доступен в нескольких цветах.",
+    "description": "",
     "price": "3,5$",
     "images": ["iphone_case_mockup.jpeg", "iphone_case_silver.jpeg", "iphone_case_deep_purple.jpeg"],
     "views": 1254,
@@ -44,13 +76,55 @@
   },
   {
     "id": 201,
-    "category_id": 1,
+    "category_id": 7,
     "name": "iPhone 15 Pro",
     "price": "999$",
     "images": ["iphone_15_pro.jpeg", "iphone_15_pro_2.jpeg"],
     "views": 890,
     "isNew": true,
     "variants": []
+  },
+  {
+    "id": 101,
+    "category_id": 7,
+    "activeImage": 0,
+    "name": "17 Pro Style Premium Case",
+    "description": "",
+    "price": "3,5$",
+    "images": ["iphone_case_mockup.jpeg", "iphone_case_silver.jpeg", "iphone_case_deep_purple.jpeg"],
+    "views": 1254,
+    "isNew": true,
+    "variants": [
+      { "model": "iPhone 16 Pro Max", "price": "5656TMT" },
+      { "model": "iPhone 16 Pro", "price": "" },
+      { "model": "iPhone 15 Pro Max" },
+      { "model": "iPhone 15 Pro" },
+      { "model": "iPhone 14 Pro Max" },
+      { "model": "iPhone 14 Pro" },
+      { "model": "iPhone 13 Pro Max" },
+      { "model": "iPhone 13 Pro" }
+    ]
+  },
+  {
+    "id": 101,
+    "category_id": 7,
+    "activeImage": 0,
+    "name": "17 Pro Style Premium Case",
+    "description": "",
+    "price": "3,5$",
+    "images": ["iphone_case_mockup.jpeg", "iphone_case_silver.jpeg", "iphone_case_deep_purple.jpeg"],
+    "views": 1254,
+    "isNew": true,
+    "variants": [
+      { "model": "iPhone 16 Pro Max", "price": "5656TMT" },
+      { "model": "iPhone 16 Pro", "price": "" },
+      { "model": "iPhone 15 Pro Max" },
+      { "model": "iPhone 15 Pro" },
+      { "model": "iPhone 14 Pro Max" },
+      { "model": "iPhone 14 Pro" },
+      { "model": "iPhone 13 Pro Max" },
+      { "model": "iPhone 13 Pro" }
+    ]
   }
 ]
 }

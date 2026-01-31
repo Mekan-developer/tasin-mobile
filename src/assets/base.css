@@ -18,6 +18,17 @@
   --footer-bg: rgba(255, 255, 255, 0.85);
   --footer-border: rgba(224, 224, 224, 0.6);
   --category-icon-border: #e0e0e0;
+  /* Единая высота хедера: layout-header и HeaderItem используют одни значения */
+  --header-height: 86px;
+  --header-height-desktop: 64px;
+
+  /* Typography: responsive font sizes */
+  --text-xs: 10px;
+  --text-sm: 12px;
+  --text-base: 14px;
+  --text-md: 16px;
+  --text-lg: 18px;
+  --text-xl: 20px;
 
   --gyrmyzy2-colors: #a281cd;
 
@@ -76,11 +87,15 @@
   --footer-bg: rgba(30, 30, 30, 0.9);
   --footer-border: rgba(64, 64, 64, 0.6);
   --category-icon-border: #404040;
+  --header-height: 86px;
+  --header-height-desktop: 64px;
 }
 
 body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
+  padding-left: env(safe-area-inset-left, 0);
+  padding-right: env(safe-area-inset-right, 0);
   transition:
     background-color 0.3s,
     color 0.3s;
@@ -114,8 +129,19 @@ body {
   font-weight: normal;
 }
 
-body {
+/* Запрет изменения масштаба двумя пальцами; для PWA — viewport на весь экран */
+html {
+  touch-action: manipulation;
+  height: 100%;
+  min-height: 100dvh;
   min-height: 100vh;
+}
+
+body {
+  min-height: 100dvh;
+  min-height: 100vh;
+  height: 100%;
+  touch-action: manipulation;
   color: var(--color-text);
   background: var(--color-background);
   transition:
@@ -135,8 +161,43 @@ body {
     'Droid Sans',
     'Helvetica Neue',
     sans-serif;
-  font-size: 15px;
+  font-size: var(--text-base);
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography and header height: один брейкпоинт 768px для хедера */
+@media (min-width: 768px) {
+  :root {
+    --text-xs: 11px;
+    --text-sm: 13px;
+    --text-base: 15px;
+    --text-md: 17px;
+    --text-lg: 20px;
+    --text-xl: 22px;
+    --header-height: var(--header-height-desktop);
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --text-xs: 12px;
+    --text-sm: 14px;
+    --text-base: 16px;
+    --text-md: 18px;
+    --text-lg: 22px;
+    --text-xl: 24px;
+  }
+}
+
+@media (min-width: 1280px) {
+  :root {
+    --text-xs: 13px;
+    --text-sm: 15px;
+    --text-base: 17px;
+    --text-md: 19px;
+    --text-lg: 24px;
+    --text-xl: 26px;
+  }
 }

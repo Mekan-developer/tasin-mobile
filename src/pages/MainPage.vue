@@ -11,8 +11,18 @@
           :to="`/category/${category.id}`"
           class="category-card"
         >
-          <div v-if="category.image_icon" class="category-icon" :class="{ 'category-icon--accent': category.isAccent }">
-            <img :src="categoryImage(category)" :alt="category.image_icon">
+          <div class="category-icon" :class="{ 'category-icon--accent': category.isAccent }">
+            <img
+              v-if="category.image_icon && !failedIconIds[category.id]"
+              :src="categoryImage(category)"
+              :alt="category.name"
+              @error="setIconError(category.id)"
+            >
+            <span v-else class="default-category-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+              </svg>
+            </span>
           </div>
           <span class="category-name">{{ category.name }}</span>
 
@@ -23,17 +33,25 @@
 </template>
 
 <script setup>
-import {  onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import ProductSlider from '@/components/main/ProductSlider.vue'
 import { useCategoryStore } from '@/stores/category'
 
 const categoryStore = useCategoryStore()
 
-onMounted(async () => {await categoryStore.fetchCategories(); console.log('categories', categoryStore.categories)})
+/** Id категорий, у которых не загрузилась иконка (404 или ошибка) — показываем дефолт */
+const failedIconIds = ref({})
 
+onMounted(async () => { await categoryStore.fetchCategories() })
 
-const categoryImage = (category) => {
+/** URL иконки категории; пустая строка при отсутствии image_icon */
+function categoryImage(category) {
+  if (!category?.image_icon) return ''
   return new URL(`../assets/categories/${category.image_icon}`, import.meta.url).href
+}
+
+function setIconError(categoryId) {
+  failedIconIds.value = { ...failedIconIds.value, [categoryId]: true }
 }
 
 </script>
@@ -56,7 +74,7 @@ const categoryImage = (category) => {
 }
 
 .section-title {
-  font-size: 17px;
+  font-size: var(--text-lg);
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 12px;
@@ -110,8 +128,22 @@ const categoryImage = (category) => {
   color: white;
 }
 
+/* Дефолтная иконка при отсутствии или ошибке загрузки изображения категории */
+.default-category-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: currentColor;
+}
+
+.default-category-icon svg {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
 .category-name {
-  font-size: 12px;
+  font-size: var(--text-sm);
   font-weight: 500;
   color: var(--text-primary);
   text-align: center;
@@ -136,7 +168,7 @@ const categoryImage = (category) => {
   }
 
   .category-name {
-    font-size: 11px;
+    font-size: var(--text-xs);
   }
 }
 
@@ -147,7 +179,7 @@ const categoryImage = (category) => {
   }
 
   .section-title {
-    font-size: 16px;
+    font-size: var(--text-md);
   }
 
   .categories-grid {
@@ -171,7 +203,6 @@ const categoryImage = (category) => {
   }
 
   .section-title {
-    font-size: 20px;
     margin-bottom: 16px;
   }
 
@@ -190,9 +221,6 @@ const categoryImage = (category) => {
     height: 64px;
   }
 
-  .category-name {
-    font-size: 14px;
-  }
 }
 
 /* Desktop: 6 колонок, увеличенные отступы */
@@ -202,7 +230,6 @@ const categoryImage = (category) => {
   }
 
   .section-title {
-    font-size: 22px;
     margin-bottom: 20px;
   }
 
@@ -224,9 +251,6 @@ const categoryImage = (category) => {
     border-radius: 16px;
   }
 
-  .category-name {
-    font-size: 15px;
-  }
 }
 
 /* Широкий десктоп: мягкое ограничение ширины сетки категорий */
@@ -246,10 +270,6 @@ const categoryImage = (category) => {
   .category-icon {
     width: 80px;
     height: 80px;
-  }
-
-  .category-name {
-    font-size: 16px;
   }
 }
 </style>

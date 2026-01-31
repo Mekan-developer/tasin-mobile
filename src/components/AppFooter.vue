@@ -100,7 +100,7 @@
 }
 
 .label {
-  font-size: 11px;
+  font-size: var(--text-xs);
   font-weight: 500;
   letter-spacing: 0.2px;
 }
@@ -111,7 +111,7 @@
   right: -10px;
   background-color: var(--badge-bg);
   color: white;
-  font-size: 10px;
+  font-size: var(--text-xs);
   font-weight: 600;
   min-width: 18px;
   height: 18px;
@@ -135,7 +135,7 @@
   }
 
   .label {
-    font-size: 12px;
+    font-size: var(--text-sm);
   }
 }
 </style>

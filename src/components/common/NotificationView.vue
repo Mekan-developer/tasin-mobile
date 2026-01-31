@@ -66,7 +66,7 @@ watch(() => props.message, (newMessage) => {
   z-index: 2000;
   border: 1px solid var(--border-color);
   font-weight: 500;
-  font-size: 14px;
+  font-size: var(--text-base);
   max-width: calc(100% - 32px);
   width: fit-content;
 }

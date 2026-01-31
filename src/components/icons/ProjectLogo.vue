@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="w-[180px] h-auto">
-      <img :src="projectLogo" alt="logo elyeterli dal" />
+    <div class="w-auto h-[40px]">
+      <img :src="projectLogo" alt="logo elyeterli dal" class="w-full h-full object-contain" />
     </div>
   </div>
 </template>

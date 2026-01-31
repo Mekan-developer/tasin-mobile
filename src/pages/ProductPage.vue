@@ -2,11 +2,10 @@
   <div class="category-page">
     <HeaderItem v-if="categoryName" :categoryName="categoryName" :productCount="products.length" />
 
-    <div class="products-list">
-      <div v-if="productsStore.loading">Загрузка...</div>
-      <div v-else-if="productsStore.error">{{ productsStore.error }}</div>
-      <div v-else>
-        <div v-for="product in products" :key="product.id" :id="`product-${product.id}`" class="product-card flex flex-col">
+    <div v-if="productsStore.loading">Загрузка...</div>
+    <div v-else-if="productsStore.error">{{ productsStore.error }}</div>
+    <div v-else class="products-list h-auto min-h-0" :class="{ 'any-variants-expanded': variantsExpandedCount > 0 }">
+        <div v-for="product in products" :key="product.id" :id="`product-${product.id}`" class="product-card">
           <div class="product-main-content">
             <h3 class="product-name">{{ product.name }}</h3>
 
@@ -35,15 +34,15 @@
             />
           </div>
 
-          <div v-if="product.description" class="p-1 bg-white/5 border border-white/10 ">
-            <p class="text-sm text-gray-300 leading-tight">
+          <div v-if="product.description" class="product-description py-2 px-4 bg-white/5 border border-white/10 h-full">
+            <p class="text-gray-300 leading-tight">
               {{ product.description }}
             </p>
           </div>
 
-          <VariantsItem :variants="product.variants || []" />
+          <VariantsItem :variants="product.variants || []" @expanded-change="onVariantsExpandedChange" />
         </div>
-      </div>
+
     </div>
 
     <ImageModal
@@ -81,6 +80,13 @@ import {useProductsStore} from '@/stores/product'
 
 const productsStore = useProductsStore()
 const products = computed(() => productsStore.products)
+
+/** Количество карточек с раскрытым блоком «Доступные модели» — для выравнивания сетки */
+const variantsExpandedCount = ref(0)
+function onVariantsExpandedChange(expanded) {
+  variantsExpandedCount.value = Math.max(0, variantsExpandedCount.value + (expanded ? 1 : -1))
+}
+watch(products, () => { variantsExpandedCount.value = 0 }, { deep: true })
 
 onMounted(async () => {
   await loadCategoryNames()
@@ -335,8 +341,7 @@ const shareProduct = async (product) => {
   display: flex;
   flex-direction: column;
   width: 100%;
-  min-height: 100%;
-  background-color: var(--bg-primary);
+
 }
 
 .products-list {
@@ -346,7 +351,8 @@ const shareProduct = async (product) => {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding-bottom: 40px;
+  padding-bottom:0;
+  background-color: var(--bg-secondary);
 }
 
 .product-card {
@@ -362,7 +368,7 @@ const shareProduct = async (product) => {
   display: flex;
   flex-direction: column;
   padding: 12px 12px 0 12px;
-  gap: 12px;
+  gap: 6px;
 }
 
 .product-image-container {
@@ -371,11 +377,19 @@ const shareProduct = async (product) => {
 }
 
 .product-name {
-  font-size: 18px;
-  font-weight: 700;
+  font-size: var(--text-base);
+  font-weight: 500;
   margin: 0;
   color: var(--text-primary);
   line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.product-description p {
+  font-size: var(--text-sm);
 }
 
 /* Toast Notification */
@@ -410,7 +424,7 @@ const shareProduct = async (product) => {
   height: 20px;
 }
 
-/* Планшет: сетка 2 колонки */
+/* Планшет: сетка 2 колонки; когда все свёрнуты — равная высота ряда (stretch); при раскрытии одной — только она растёт */
 @media (min-width: 768px) {
   .products-list {
     display: grid;
@@ -418,19 +432,20 @@ const shareProduct = async (product) => {
     gap: 24px;
     padding: 24px;
     padding-bottom: 48px;
+    align-items: stretch;
+  }
+
+  .products-list.any-variants-expanded {
+    align-items: start;
   }
 
   .product-main-content {
-    padding: 14px;
+    padding: 14px 14px 0 14px;
     gap: 14px;
-  }
-
-  .product-name {
-    font-size: 19px;
   }
 }
 
-/* Десктоп: 3 колонки, увеличенные отступы */
+/* Десктоп: 3 колонки; align-items: start уже задан в 768px */
 @media (min-width: 1024px) {
   .products-list {
     grid-template-columns: repeat(3, 1fr);
@@ -449,12 +464,8 @@ const shareProduct = async (product) => {
   }
 
   .product-main-content {
-    padding: 22px;
+    padding: 22px 22px 0 22px;
     gap: 16px;
-  }
-
-  .product-name {
-    font-size: 20px;
   }
 }
 
@@ -468,12 +479,8 @@ const shareProduct = async (product) => {
   }
 
   .product-main-content {
-    padding: 16px;
+    padding: 16px 16px 0 16px;
     gap: 18px;
-  }
-
-  .product-name {
-    font-size: 22px;
   }
 }
 </style>

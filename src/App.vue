@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="flex flex-col h-[100%] pb-0">
+  <div id="app" class="flex flex-col h-full pb-0">
     <MainLayout>
       <RouterView />
     </MainLayout>
